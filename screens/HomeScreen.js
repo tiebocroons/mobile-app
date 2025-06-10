@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, StatusBar, ActivityIndicator, Text } from 'react-native';
+import { View, StyleSheet, StatusBar, ActivityIndicator, Text, FlatList } from 'react-native';
 import ProductCard from '../components/ProductCard';
 import axios from 'axios';
 
 const API_URL = 'https://api.webflow.com/v2/sites/67b3895e80c9f1633cc77720/products';
-const API_KEY = '27786b30638667e363a560f16ef4f49a5da86f2d0d5181e6cf49df9feff1aa8a';
+const API_KEY = '24041412307977360bc577b126c9f1b8a4b60ee9145baa4df60dbb991731aa73';
 
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -20,7 +20,14 @@ const HomeScreen = ({ navigation }) => {
             'accept-version': '1.0.0',
           },
         });
-        setProducts(response.data.items); // Assuming the products are in the 'items' array
+        // Map de JSON-structuur om de juiste gegevens te extraheren
+        const formattedProducts = response.data.items.map((item) => ({
+          id: item.product.id,
+          name: item.product.fieldData.name,
+          imageUrl: item.skus[0]?.fieldData['main-image']?.url || 'https://via.placeholder.com/200',
+          price: item.skus[0]?.fieldData.price?.value || 0,
+        }));
+        setProducts(formattedProducts);
         setLoading(false);
       } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -53,15 +60,27 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {products.map((product, index) => (
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id}
+        numColumns={2} // Zorgt voor een 2-koloms weergave
+        contentContainerStyle={styles.flatListContent}
+        renderItem={({ item }) => (
           <ProductCard
-            key={index}
-            product={product}
-            onPress={() => navigation.navigate('ProductDetails', { productId: product._id })}
+            product={item}
+            onPress={() => {
+              console.log('Navigating to ProductDetails with productId:', item.id);
+              navigation.navigate('ProductDetails', {
+                productId: item.id,
+                name: item.name,
+                description: item.description, // Zorg ervoor dat dit wordt doorgegeven
+                price: item.price,
+                imageUrl: item.imageUrl,
+              });
+            }}
           />
-        ))}
-      </ScrollView>
+        )}
+      />
       <StatusBar style="auto" />
     </View>
   );
@@ -71,10 +90,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f0f0',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  scrollViewContent: {
+  flatListContent: {
+    paddingHorizontal: 10,
     paddingTop: 20,
   },
   loadingContainer: {
