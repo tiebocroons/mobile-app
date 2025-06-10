@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, useWindowDimensions } from 'react-native';
 import RenderHTML from 'react-native-render-html';
 
-const BlogDetailScreen = ({ route }) => {
-  const { title, intro, blogText, imageUrl } = route.params;
+const BlogDetailScreen = ({ route = {} }) => {
+  const { title = 'Untitled', intro = '', blogText = '', imageUrl = 'https://via.placeholder.com/200' } = route.params || {};
   const { width } = useWindowDimensions(); // Get screen width for responsive rendering
 
   return (
