@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useCart } from '../context/CartContext';
 
 const CartScreen = ({ navigation }) => {
@@ -18,8 +18,11 @@ const CartScreen = ({ navigation }) => {
     // Clear the cart
     setCart([]);
 
-    // Navigate to the Success screen
-    navigation.navigate('Success');
+    // Reset the navigation stack and navigate to the Success screen
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Success' }],
+    });
   };
 
   return (
@@ -50,7 +53,9 @@ const CartScreen = ({ navigation }) => {
               </View>
             )}
           />
-          <Button title="Buy Items" onPress={handleBuyItems} />
+          <TouchableOpacity style={styles.buyButton} onPress={handleBuyItems}>
+            <Text style={styles.buyButtonText}>Buy Items</Text>
+          </TouchableOpacity>
         </>
       )}
     </View>
@@ -103,6 +108,18 @@ const styles = StyleSheet.create({
   removeButtonText: {
     color: '#fff',
     fontSize: 14,
+    fontWeight: 'bold',
+  },
+  buyButton: {
+    backgroundColor: 'tomato',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buyButtonText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
