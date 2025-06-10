@@ -7,6 +7,10 @@ const WishlistScreen = () => {
   const { wishlist, setWishlist } = useWishlist();
   const { addToCart } = useCart();
 
+  const handleRemoveItem = (id) => {
+    setWishlist((prevWishlist) => prevWishlist.filter((item) => item.id !== id));
+  };
+
   const handleBuyItems = () => {
     if (wishlist.length === 0) {
       alert('Your wishlist is empty!');
@@ -41,6 +45,12 @@ const WishlistScreen = () => {
                   </Text>
                   <Text style={styles.quantity}>Quantity: {item.quantity}</Text> {/* Dynamic quantity */}
                 </View>
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => handleRemoveItem(item.id)}
+                >
+                  <Text style={styles.removeButtonText}>Remove</Text>
+                </TouchableOpacity>
               </View>
             )}
           />
@@ -90,6 +100,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     marginTop: 5,
+  },
+  removeButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  removeButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   buyButton: {
     backgroundColor: 'tomato',
