@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
-import axios from 'axios';
-
-const API_URL = 'https://api.webflow.com/v2/collections/67d81fa4a55228348b937c11/items';
-const API_KEY = '24041412307977360bc577b126c9f1b8a4b60ee9145baa4df60dbb991731aa73';
+import { fetchData } from '../apiClient';
 
 const BlogScreen = ({ navigation }) => {
   const [blogs, setBlogs] = useState([]);
@@ -13,26 +10,21 @@ const BlogScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get(API_URL, {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            'accept-version': '1.0.0',
-          },
-        });
+        const data = await fetchData('/collections/67d81fa4a55228348b937c11/items');
 
-        const formattedBlogs = response.data.items.map((item) => ({
+        const formattedBlogs = data.items.map((item) => ({
           id: item.id,
-          title: item.fieldData.title,
-          intro: item.fieldData.intro,
-          blogText: item.fieldData['blog-text'],
+          title: item.fieldData.title || 'Untitled',
+          intro: item.fieldData.intro || 'No intro available',
+          blogText: item.fieldData['blog-text'] || '',
           imageUrl: item.fieldData['blog-img']?.url || 'https://via.placeholder.com/150',
         }));
 
         setBlogs(formattedBlogs);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching blogs:', error.response?.data || error.message);
+      } catch (err) {
+        console.error('Error fetching blogs:', err.message);
         setError('An error occurred while fetching the blogs.');
+      } finally {
         setLoading(false);
       }
     };
