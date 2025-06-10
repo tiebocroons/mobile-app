@@ -1,34 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 const SuccessScreen = ({ navigation }) => {
-  const [seconds, setSeconds] = useState(5); // Start with 5 seconds
+  if (!navigation) {
+    return null; // This could cause the error if hooks are skipped
+  }
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSeconds((prevSeconds) => {
-        if (prevSeconds <= 1) {
-          clearInterval(timer); // Stop the timer when it reaches 0
-          return 0;
-        }
-        return prevSeconds - 1; // Decrease the seconds
+    const timer = setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
       });
-    }, 1000); // Update every second
+    }, 5000); // Redirect after 5 seconds
 
-    return () => clearInterval(timer); // Cleanup the timer on unmount
-  }, []);
-
-  // Separate navigation logic into another `useEffect`
-  useEffect(() => {
-    if (seconds === 0) {
-      navigation.navigate('Home'); // Redirect to Home screen
-    }
-  }, [seconds, navigation]);
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.message}>Purchase Successful!</Text>
-      <Text style={styles.redirect}>You will be redirected in {seconds} seconds</Text>
+      <Text style={styles.redirect}>You will be redirected to the Home screen shortly.</Text>
     </View>
   );
 };
@@ -43,13 +35,12 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: 'green',
+    marginBottom: 20,
   },
   redirect: {
-    fontSize: 24,
-    marginBottom: 20,
-    color: 'grey',
+    fontSize: 16,
+    color: '#666',
   },
 });
 
