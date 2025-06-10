@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, Button, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 
@@ -36,8 +36,10 @@ const WishlistScreen = () => {
                 <Image source={{ uri: item.imageUrl }} style={styles.image} />
                 <View style={styles.itemDetails}>
                   <Text style={styles.title}>{item.name}</Text>
-                  <Text style={styles.price}>Price: ${item.price}</Text>
-                  <Text style={styles.quantity}>Quantity: 1</Text>
+                  <Text style={styles.price}>
+                    Price: ${(item.price * item.quantity).toFixed(2)} {/* Dynamic price */}
+                  </Text>
+                  <Text style={styles.quantity}>Quantity: {item.quantity}</Text> {/* Dynamic quantity */}
                 </View>
               </View>
             )}

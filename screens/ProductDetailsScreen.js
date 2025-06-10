@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ActivityIndicator, Button, Alert, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, ActivityIndicator, Button, Alert, ScrollView, TextInput } from 'react-native';
 import axios from 'axios';
 import { useWishlist } from '../context/WishlistContext';
 
@@ -8,11 +8,12 @@ const API_KEY = '24041412307977360bc577b126c9f1b8a4b60ee9145baa4df60dbb991731aa7
 
 const ProductDetailsScreen = ({ route }) => {
   const { productId } = route.params;
-  const { addToWishlist } = useWishlist(); // Haal de functie op uit de context
+  const { addToWishlist } = useWishlist();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1); // State to manage quantity
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -53,9 +54,26 @@ const ProductDetailsScreen = ({ route }) => {
 
   const handleAddToWishlist = () => {
     if (product) {
-      console.log('Adding to wishlist:', product); // Debug log
-      addToWishlist(product);
-      Alert.alert('Added to Wishlist', `${product.name} has been added to your wishlist.`);
+      const productWithQuantity = { ...product, quantity }; // Add quantity to the product object
+      addToWishlist(productWithQuantity);
+      Alert.alert('Added to Wishlist', `${product.name} (x${quantity}) has been added to your wishlist.`);
+    }
+  };
+
+  const handleQuantityChange = (value) => {
+    console.log('Raw input value:', value); // Debugging log
+
+    // Allow empty input temporarily
+    if (value === '') {
+      setQuantity(''); // Set quantity to an empty string to allow user input
+      return;
+    }
+
+    const parsedValue = parseInt(value, 10);
+    if (!isNaN(parsedValue) && parsedValue > 0) {
+      setQuantity(parsedValue); // Update the quantity state
+    } else {
+      setQuantity(1); // Default to 1 if the input is invalid
     }
   };
 
@@ -80,7 +98,16 @@ const ProductDetailsScreen = ({ route }) => {
       <Image source={{ uri: product.imageUrl }} style={styles.image} />
       <Text style={styles.title}>{product.name}</Text>
       <Text style={styles.description}>{product.description}</Text>
-      <Text style={styles.price}>Price: ${product.price}</Text>
+      <Text style={styles.price}>Price: ${product.price.toFixed(2)}</Text>
+      <View style={styles.quantityContainer}>
+        <Text style={styles.quantityLabel}>Quantity:</Text>
+        <TextInput
+          style={styles.quantityInput}
+          keyboardType="numeric"
+          value={quantity.toString()} // Convert quantity to a string
+          onChangeText={handleQuantityChange} // Update quantity on input change
+        />
+      </View>
       <Button title="Add to Wishlist" onPress={handleAddToWishlist} />
     </ScrollView>
   );
@@ -125,6 +152,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#000',
+    marginBottom: 10,
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  quantityLabel: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  quantityInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 5,
+    width: 50,
+    textAlign: 'center',
   },
 });
 
