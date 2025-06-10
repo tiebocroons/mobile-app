@@ -11,6 +11,7 @@ import CartScreen from './screens/CartScreen';
 import BlogScreen from './screens/BlogScreen'; // Importeer de BlogScreen
 import { Ionicons } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
+import SuccessScreen from './screens/SuccessScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -35,35 +36,14 @@ const HomeStack = () => {
 const App = () => {
   return (
     <WishlistProvider>
-      <CartProvider> {/* Wrap the app with CartProvider */}
+      <CartProvider>
         <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ color, size }) => {
-                let iconName;
-
-                if (route.name === 'Home') {
-                  iconName = 'home';
-                } else if (route.name === 'Wishlist') {
-                  iconName = 'heart';
-                } else if (route.name === 'Cart') {
-                  iconName = 'cart';
-                } else if (route.name === 'Blog') {
-                  iconName = 'book';
-                }
-
-                return <Ionicons name={iconName} size={size} color={color} />;
-              },
-              tabBarActiveTintColor: 'tomato',
-              tabBarInactiveTintColor: 'gray',
-              headerShown: false,
-            })}
-          >
-            <Tab.Screen name="Home" component={HomeStack} />
-            <Tab.Screen name="Wishlist" component={WishlistScreen} />
-            <Tab.Screen name="Cart" component={CartScreen} />
-            <Tab.Screen name="Blog" component={BlogScreen} />
-          </Tab.Navigator>
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Wishlist" component={WishlistScreen} />
+            <Stack.Screen name="Cart" component={CartScreen} />
+            <Stack.Screen name="Success" component={SuccessScreen} />
+          </Stack.Navigator>
         </NavigationContainer>
       </CartProvider>
     </WishlistProvider>
