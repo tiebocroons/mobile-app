@@ -19,7 +19,7 @@ const HomeStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
+        name="HomeStackHome" // Unique name
         component={HomeScreen}
         options={{ title: 'Home' }}
       />
@@ -36,7 +36,7 @@ const WishlistStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Wishlist"
+        name="WishlistStackWishlist" // Unique name
         component={WishlistScreen}
         options={{ title: 'Wishlist' }}
       />

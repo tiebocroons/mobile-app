@@ -98,7 +98,9 @@ const ProductDetailsScreen = ({ route }) => {
       <Image source={{ uri: product.imageUrl }} style={styles.image} />
       <Text style={styles.title}>{product.name}</Text>
       <Text style={styles.description}>{product.description}</Text>
-      <Text style={styles.price}>Price: ${product.price.toFixed(2)}</Text>
+      <Text style={styles.price}>
+        Price: ${product?.price ? product.price.toFixed(2) : 'N/A'}
+      </Text>
       <View style={styles.quantityContainer}>
         <Text style={styles.quantityLabel}>Quantity:</Text>
         <TextInput
