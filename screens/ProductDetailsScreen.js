@@ -53,6 +53,7 @@ const ProductDetailsScreen = ({ route }) => {
 
   const handleAddToWishlist = () => {
     if (product) {
+      console.log('Adding to wishlist:', product); // Debug log
       addToWishlist(product);
       Alert.alert('Added to Wishlist', `${product.name} has been added to your wishlist.`);
     }

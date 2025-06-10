@@ -7,16 +7,15 @@ export const WishlistProvider = ({ children }) => {
 
   const addToWishlist = (product) => {
     setWishlist((prevWishlist) => {
-      // Controleer of het product al in de wishlist staat
       if (prevWishlist.some((item) => item.id === product.id)) {
-        return prevWishlist; // Geen duplicaten toevoegen
+        return prevWishlist; // Avoid duplicates
       }
       return [...prevWishlist, product];
     });
   };
 
   return (
-    <WishlistContext.Provider value={{ wishlist, addToWishlist }}>
+    <WishlistContext.Provider value={{ wishlist, setWishlist, addToWishlist }}>
       {children}
     </WishlistContext.Provider>
   );

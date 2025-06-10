@@ -1,27 +1,51 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, Button, TouchableOpacity } from 'react-native';
 import { useWishlist } from '../context/WishlistContext';
+import { useCart } from '../context/CartContext';
 
 const WishlistScreen = () => {
-  const { wishlist } = useWishlist();
-  console.log('Current wishlist:', wishlist);
+  const { wishlist, setWishlist } = useWishlist();
+  const { addToCart } = useCart();
+
+  const handleBuyItems = () => {
+    if (wishlist.length === 0) {
+      alert('Your wishlist is empty!');
+      return;
+    }
+
+    // Move items to the cart
+    addToCart(wishlist);
+
+    // Clear the wishlist
+    setWishlist([]);
+
+    alert('Items moved to the cart!');
+  };
 
   return (
     <View style={styles.container}>
       {wishlist.length === 0 ? (
         <Text style={styles.emptyText}>Your wishlist is empty.</Text>
       ) : (
-        <FlatList
-          data={wishlist}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.itemContainer}>
-              <Image source={{ uri: item.imageUrl }} style={styles.image} />
-              <Text style={styles.title}>{item.name}</Text>
-              <Text style={styles.price}>Price: ${item.price}</Text>
-            </View>
-          )}
-        />
+        <>
+          <FlatList
+            data={wishlist}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.itemContainer}>
+                <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                <View style={styles.itemDetails}>
+                  <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.price}>Price: ${item.price}</Text>
+                  <Text style={styles.quantity}>Quantity: 1</Text>
+                </View>
+              </View>
+            )}
+          />
+          <TouchableOpacity style={styles.buyButton} onPress={handleBuyItems}>
+            <Text style={styles.buyButtonText}>Buy Items</Text>
+          </TouchableOpacity>
+        </>
       )}
     </View>
   );
@@ -44,9 +68,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 80,
+    height: 80,
     marginRight: 10,
+  },
+  itemDetails: {
+    flex: 1,
   },
   title: {
     fontSize: 16,
@@ -55,6 +82,24 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 14,
     color: '#666',
+    marginTop: 5,
+  },
+  quantity: {
+    fontSize: 14,
+    color: '#333',
+    marginTop: 5,
+  },
+  buyButton: {
+    backgroundColor: 'tomato',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buyButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
