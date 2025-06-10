@@ -3,46 +3,41 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 const ProductCard = ({ product, onPress }) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
+    <TouchableOpacity onPress={onPress} style={styles.card}>
       <Image source={{ uri: product.imageUrl }} style={styles.image} />
-      <View style={styles.infoContainer}>
-        <Text style={styles.title}>{product.name}</Text>
-        <Text style={styles.price}>${product.price}</Text>
-      </View>
+      <Text style={styles.name}>{product.name}</Text>
+      <Text style={styles.price}>${product.price.toFixed(2)}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
+    flex: 1,
+    margin: 10,
     backgroundColor: '#fff',
     borderRadius: 8,
-    overflow: 'hidden',
-    marginBottom: 20,
-    marginHorizontal: 5,
+    padding: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    flex: 1,
-    maxWidth: '48%',
+    shadowRadius: 4,
+    elevation: 3,
   },
   image: {
     width: '100%',
     height: 150,
+    borderRadius: 8,
+    marginBottom: 10,
   },
-  infoContainer: {
-    padding: 10,
-  },
-  title: {
+  name: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 5,
   },
   price: {
     fontSize: 14,
-    color: '#888',
-    marginTop: 5,
+    color: '#666',
   },
 });
 
