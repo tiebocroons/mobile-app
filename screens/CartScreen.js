@@ -19,7 +19,7 @@ const CartScreen = ({ navigation }) => {
     setCart([]);
 
     // Navigate to the Success screen in the correct stack
-    navigation.navigate('Wishlist', { screen: 'Success' });
+    navigation.navigate('Cart', { screen: 'Success' });
   };
 
   return (

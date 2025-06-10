@@ -49,6 +49,23 @@ const WishlistStack = () => {
   );
 };
 
+const CartStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{ title: 'Cart' }}
+      />
+      <Stack.Screen
+        name="Success"
+        component={SuccessScreen}
+        options={{ title: 'Success' }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const App = () => {
   return (
     <WishlistProvider>
@@ -78,7 +95,7 @@ const App = () => {
           >
             <Tab.Screen name="Home" component={HomeStack} />
             <Tab.Screen name="Wishlist" component={WishlistStack} />
-            <Tab.Screen name="Cart" component={CartScreen} />
+            <Tab.Screen name="Cart" component={CartStack} />
             <Tab.Screen name="Blog" component={BlogScreen} />
           </Tab.Navigator>
         </NavigationContainer>
