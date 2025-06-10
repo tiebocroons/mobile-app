@@ -1,31 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ActivityIndicator, Button, TextInput, Alert } from 'react-native';
-import axios from 'axios';
-
-const API_URL = 'https://api.webflow.com/v2/sites/67b3895e80c9f1633cc77720/products';
-const API_KEY = '24041412307977360bc577b126c9f1b8a4b60ee9145baa4df60dbb991731aa73';
+import { fetchData } from '../apiClient';
 
 const DetailsScreen = ({ route }) => {
-  const { productId } = route.params; // Haal het product-ID op uit de parameters
+  const { productId } = route.params; // Get the product ID from route parameters
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [quantity, setQuantity] = useState(1); // Standaard hoeveelheid is 1
+  const [quantity, setQuantity] = useState(1); // Default quantity is 1
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(API_URL, {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            'accept-version': '1.0.0',
-          },
-        });
+        const data = await fetchData('/sites/67b3895e80c9f1633cc77720/products');
 
-        // Zoek het specifieke product op basis van het productId
-        const foundProduct = response.data.items.find(
-          (item) => item.product.id === productId
-        );
+        // Find the specific product based on the productId
+        const foundProduct = data.items.find((item) => item.product.id === productId);
 
         if (foundProduct) {
           const formattedProduct = {
@@ -39,11 +29,10 @@ const DetailsScreen = ({ route }) => {
         } else {
           setError('Product not found.');
         }
-
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching product:', error.response?.data || error.message);
+      } catch (err) {
+        console.error('Error fetching product:', err.message);
         setError('An error occurred while fetching the product.');
+      } finally {
         setLoading(false);
       }
     };
@@ -52,9 +41,18 @@ const DetailsScreen = ({ route }) => {
   }, [productId]);
 
   const addToCart = () => {
-    // Voeg het product toe aan de winkelwagen (je kunt dit aanpassen aan je winkelwagenlogica)
+    // Add the product to the cart (you can adapt this to your cart logic)
     Alert.alert('Added to Cart', `${quantity} x ${product.name} has been added to your cart.`);
     console.log('Added to cart:', { product, quantity });
+  };
+
+  const handleQuantityChange = (text) => {
+    const parsedQuantity = parseInt(text, 10);
+    if (!isNaN(parsedQuantity) && parsedQuantity > 0) {
+      setQuantity(parsedQuantity);
+    } else {
+      setQuantity(1); // Default to 1 if the input is invalid
+    }
   };
 
   if (loading) {
@@ -86,18 +84,18 @@ const DetailsScreen = ({ route }) => {
       <Image source={{ uri: product.imageUrl }} style={styles.image} />
       <Text style={styles.title}>{product.name}</Text>
       <Text style={styles.description}>{product.description}</Text>
-      <Text style={styles.price}>${product.price}</Text>
+      <Text style={styles.price}>${product.price.toFixed(2)}</Text>
 
-      {/* Hoeveelheid invoeren */}
+      {/* Quantity Input */}
       <Text style={styles.quantityLabel}>Quantity:</Text>
       <TextInput
         style={styles.quantityInput}
         keyboardType="numeric"
         value={quantity.toString()}
-        onChangeText={(text) => setQuantity(Number(text) || 1)} // Zorg ervoor dat de hoeveelheid minimaal 1 is
+        onChangeText={handleQuantityChange}
       />
 
-      {/* Knop om toe te voegen aan winkelwagen */}
+      {/* Add to Cart Button */}
       <Button title="Add to Cart" onPress={addToCart} />
     </View>
   );
