@@ -18,8 +18,8 @@ const CartScreen = ({ navigation }) => {
     // Clear the cart
     setCart([]);
 
-    // Navigate to the Success screen in the correct stack
-    navigation.navigate('Cart', { screen: 'Success' });
+    // Navigate to the Success screen
+    navigation.navigate('Success');
   };
 
   return (
