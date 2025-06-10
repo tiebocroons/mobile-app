@@ -12,6 +12,7 @@ import CartScreen from './screens/CartScreen';
 import SuccessScreen from './screens/SuccessScreen';
 import BlogScreen from './screens/BlogScreen';
 import BlogDetailScreen from './screens/BlogDetailScreen';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -86,39 +87,41 @@ const BlogStack = () => {
 
 const App = () => {
   return (
-    <WishlistProvider>
-      <CartProvider>
-        <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ color, size }) => {
-                let iconName;
+    <ErrorBoundary>
+      <WishlistProvider>
+        <CartProvider>
+          <NavigationContainer>
+            <Tab.Navigator
+              screenOptions={({ route }) => ({
+                tabBarIcon: ({ color, size }) => {
+                  let iconName;
 
-                if (route.name === 'Home') {
-                  iconName = 'home';
-                } else if (route.name === 'Wishlist') {
-                  iconName = 'heart';
-                } else if (route.name === 'Cart') {
-                  iconName = 'cart';
-                } else if (route.name === 'Blog') {
-                  iconName = 'book';
-                }
+                  if (route.name === 'Home') {
+                    iconName = 'home';
+                  } else if (route.name === 'Wishlist') {
+                    iconName = 'heart';
+                  } else if (route.name === 'Cart') {
+                    iconName = 'cart';
+                  } else if (route.name === 'Blog') {
+                    iconName = 'book';
+                  }
 
-                return <Ionicons name={iconName} size={size} color={color} />;
-              },
-              tabBarActiveTintColor: 'tomato',
-              tabBarInactiveTintColor: 'gray',
-              headerShown: false, // Hide header for tabs
-            })}
-          >
-            <Tab.Screen name="Home" component={HomeStack} />
-            <Tab.Screen name="Wishlist" component={WishlistStack} />
-            <Tab.Screen name="Cart" component={CartStack} />
-            <Tab.Screen name="Blog" component={BlogStack} />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </CartProvider>
-    </WishlistProvider>
+                  return <Ionicons name={iconName} size={size} color={color} />;
+                },
+                tabBarActiveTintColor: 'tomato',
+                tabBarInactiveTintColor: 'gray',
+                headerShown: false, // Hide header for tabs
+              })}
+            >
+              <Tab.Screen name="Home" component={HomeStack} />
+              <Tab.Screen name="Wishlist" component={WishlistStack} />
+              <Tab.Screen name="Cart" component={CartStack} />
+              <Tab.Screen name="Blog" component={BlogStack} />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </CartProvider>
+      </WishlistProvider>
+    </ErrorBoundary>
   );
 };
 
