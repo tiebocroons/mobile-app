@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 
@@ -9,6 +9,17 @@ const WishlistScreen = () => {
 
   const handleRemoveItem = (id) => {
     setWishlist((prevWishlist) => prevWishlist.filter((item) => item.id !== id));
+  };
+
+  const handleQuantityChange = (id, value) => {
+    const parsedValue = parseInt(value, 10);
+    setWishlist((prevWishlist) =>
+      prevWishlist.map((item) =>
+        item.id === id
+          ? { ...item, quantity: !isNaN(parsedValue) && parsedValue > 0 ? parsedValue : 1 }
+          : item
+      )
+    );
   };
 
   const handleBuyItems = () => {
@@ -41,9 +52,17 @@ const WishlistScreen = () => {
                 <View style={styles.itemDetails}>
                   <Text style={styles.title}>{item.name}</Text>
                   <Text style={styles.price}>
-                    Price: ${(item.price * item.quantity).toFixed(2)} {/* Dynamic price */}
+                    Price: ${item?.price && item?.quantity ? (item.price * item.quantity).toFixed(2) : 'N/A'}
                   </Text>
-                  <Text style={styles.quantity}>Quantity: {item.quantity}</Text> {/* Dynamic quantity */}
+                  <View style={styles.quantityContainer}>
+                    <Text style={styles.quantityLabel}>Quantity:</Text>
+                    <TextInput
+                      style={styles.quantityInput}
+                      keyboardType="numeric"
+                      value={item.quantity.toString()}
+                      onChangeText={(value) => handleQuantityChange(item.id, value)}
+                    />
+                  </View>
                 </View>
                 <TouchableOpacity
                   style={styles.removeButton}
@@ -96,10 +115,22 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 5,
   },
-  quantity: {
-    fontSize: 14,
-    color: '#333',
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 5,
+  },
+  quantityLabel: {
+    fontSize: 14,
+    marginRight: 10,
+  },
+  quantityInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 5,
+    width: 50,
+    textAlign: 'center',
   },
   removeButton: {
     backgroundColor: 'red',
