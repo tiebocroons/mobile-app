@@ -9,8 +9,9 @@ import HomeScreen from './screens/HomeScreen';
 import ProductDetailsScreen from './screens/ProductDetailsScreen';
 import WishlistScreen from './screens/WishlistScreen';
 import CartScreen from './screens/CartScreen';
-import BlogScreen from './screens/BlogScreen';
 import SuccessScreen from './screens/SuccessScreen';
+import BlogScreen from './screens/BlogScreen';
+import BlogDetailScreen from './screens/BlogDetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -53,7 +54,7 @@ const CartStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Cart"
+        name="CartScreen"
         component={CartScreen}
         options={{ title: 'Cart' }}
       />
@@ -61,6 +62,23 @@ const CartStack = () => {
         name="Success"
         component={SuccessScreen}
         options={{ title: 'Success' }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const BlogStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="BlogList"
+        component={BlogScreen}
+        options={{ title: 'Blogs' }}
+      />
+      <Stack.Screen
+        name="BlogDetailScreen"
+        component={BlogDetailScreen}
+        options={{ title: 'Blog Details' }}
       />
     </Stack.Navigator>
   );
@@ -96,7 +114,7 @@ const App = () => {
             <Tab.Screen name="Home" component={HomeStack} />
             <Tab.Screen name="Wishlist" component={WishlistStack} />
             <Tab.Screen name="Cart" component={CartStack} />
-            <Tab.Screen name="Blog" component={BlogScreen} />
+            <Tab.Screen name="Blog" component={BlogStack} />
           </Tab.Navigator>
         </NavigationContainer>
       </CartProvider>

@@ -37,9 +37,9 @@ const CartScreen = ({ navigation }) => {
                 <View style={styles.itemDetails}>
                   <Text style={styles.title}>{item.name}</Text>
                   <Text style={styles.price}>
-                    Price: ${(item.price * item.quantity).toFixed(2)} {/* Dynamic price */}
+                    Price: ${(item.price * item.quantity).toFixed(2)}
                   </Text>
-                  <Text style={styles.quantity}>Quantity: {item.quantity}</Text> {/* Dynamic quantity */}
+                  <Text style={styles.quantity}>Quantity: {item.quantity}</Text>
                 </View>
                 <TouchableOpacity
                   style={styles.removeButton}

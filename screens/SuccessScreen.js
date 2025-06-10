@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 
 const SuccessScreen = ({ navigation }) => {
   const [seconds, setSeconds] = useState(5); // Start with 5 seconds
 
-  useFocusEffect(
-    React.useCallback(() => {
-      // Reset the countdown timer whenever the screen is focused
-      setSeconds(5);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSeconds((prevSeconds) => {
+        if (prevSeconds <= 1) {
+          clearInterval(timer); // Stop the timer when it reaches 0
+          return 0;
+        }
+        return prevSeconds - 1; // Decrease the seconds
+      });
+    }, 1000); // Update every second
 
-      const timer = setInterval(() => {
-        setSeconds((prevSeconds) => {
-          if (prevSeconds <= 1) {
-            clearInterval(timer); // Stop the timer when it reaches 0
-            navigation.navigate('Home'); // Redirect to HomeScreen
-            return 0;
-          }
-          return prevSeconds - 1; // Decrease the seconds
-        });
-      }, 1000); // Update every second
+    return () => clearInterval(timer); // Cleanup the timer on unmount
+  }, []);
 
-      return () => clearInterval(timer); // Cleanup the timer on unmount or when the screen loses focus
-    }, [navigation])
-  );
+  // Separate navigation logic into another `useEffect`
+  useEffect(() => {
+    if (seconds === 0) {
+      navigation.navigate('Home'); // Redirect to Home screen
+    }
+  }, [seconds, navigation]);
 
   return (
     <View style={styles.container}>
