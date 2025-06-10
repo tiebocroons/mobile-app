@@ -1,18 +1,34 @@
 import React from 'react';
+// Importeer React om de component te maken.
+
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
+// Importeer React Native-componenten om de gebruikersinterface te bouwen.
+
 import { useWishlist } from '../context/WishlistContext';
+// Importeer de `useWishlist`-hook om toegang te krijgen tot en de verlanglijstcontext te beheren.
+
 import { useCart } from '../context/CartContext';
+// Importeer de `useCart`-hook om toegang te krijgen tot en de winkelwagencontext te beheren.
 
 const WishlistScreen = () => {
+  // Definieer de WishlistScreen-component.
+
   const { wishlist, setWishlist } = useWishlist();
+  // Haal de `wishlist`- en `setWishlist`-functies uit de verlanglijstcontext.
+
   const { addToCart } = useCart();
+  // Haal de `addToCart`-functie uit de winkelwagencontext.
 
   const handleRemoveItem = (id) => {
+    // Definieer een functie om een item uit de verlanglijst te verwijderen op basis van het ID.
     setWishlist((prevWishlist) => prevWishlist.filter((item) => item.id !== id));
+    // Werk de verlanglijst bij door het item met het opgegeven ID te verwijderen.
   };
 
   const handleQuantityChange = (id, value) => {
+    // Definieer een functie om wijzigingen in de hoeveelheid van een item te verwerken.
     const parsedValue = parseInt(value, 10);
+    // Converteer de invoerwaarde naar een geheel getal.
     setWishlist((prevWishlist) =>
       prevWishlist.map((item) =>
         item.id === id
@@ -20,80 +36,89 @@ const WishlistScreen = () => {
           : item
       )
     );
+    // Werk de hoeveelheid van het item met het opgegeven ID bij, zorg ervoor dat het een geldig getal is.
   };
 
   const handleBuyItems = () => {
-    console.log('Buy Items button pressed'); // Log button press
-
+    // Definieer een functie om de "Koop items"-knop te verwerken.
     if (wishlist.length === 0) {
-      console.log('Wishlist is empty'); // Log empty wishlist
-      alert('Your wishlist is empty!');
+      // Controleer of de verlanglijst leeg is.
+      alert('Je verlanglijst is leeg!');
+      // Toon een melding als de verlanglijst leeg is.
       return;
     }
 
-    console.log('Wishlist before moving to cart:', wishlist); // Log wishlist before moving items
-
-    // Move items to the cart
     addToCart(wishlist);
-    console.log('Items added to cart:', wishlist); // Log items added to the cart
+    // Voeg alle items uit de verlanglijst toe aan de winkelwagen.
 
-    // Clear the wishlist
     setWishlist([]);
-    console.log('Wishlist cleared'); // Log wishlist cleared
+    // Maak de verlanglijst leeg.
 
-    alert('Items moved to the cart!');
+    alert('Items verplaatst naar de winkelwagen!');
+    // Toon een melding die bevestigt dat de items zijn verplaatst naar de winkelwagen.
   };
-
-  console.log('Wishlist:', wishlist); // Debugging log
 
   return (
     <View style={styles.container}>
+      {/* Render de hoofdcontainer voor het scherm. */}
       {wishlist.length === 0 ? (
-        <Text style={styles.emptyText}>Your wishlist is empty.</Text>
+        // Controleer of de verlanglijst leeg is.
+        <Text style={styles.emptyText}>Je verlanglijst is leeg.</Text>
+        // Toon een bericht als de verlanglijst leeg is.
       ) : (
         <>
+          {/* Render de items in de verlanglijst als deze niet leeg is. */}
           <FlatList
             data={wishlist}
+            // Stel de gegevensbron voor de FlatList in op de verlanglijst.
             keyExtractor={(item) => item.id}
+            // Gebruik het ID van het item als sleutel voor elk lijstitem.
             renderItem={({ item }) => {
-              console.log('Rendering item:', item); // Debugging log
+              // Definieer hoe elk item in de lijst moet worden weergegeven.
               return (
                 <View style={styles.itemContainer}>
+                  {/* Render de container voor elk item in de verlanglijst. */}
                   <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                  {/* Toon de afbeelding van het item. */}
                   <View style={styles.itemDetails}>
-                    {/* Validate and render item name */}
-                    <Text style={styles.title}>{item?.name || 'Unnamed Item'}</Text>
-
-                    {/* Validate and render item price */}
+                    {/* Render de container voor de details van het item. */}
+                    <Text style={styles.title}>{item?.name || 'Naamloos item'}</Text>
+                    {/* Toon de naam van het item, of een fallback als deze niet is opgegeven. */}
                     <Text style={styles.price}>
-                      Price: ${item?.price && item?.quantity ? (item.price * item.quantity).toFixed(2) : 'N/A'}
+                      Prijs: €
+                      {item?.price && item?.quantity ? (item.price * item.quantity).toFixed(2) : 'N/A'}
                     </Text>
-
-                    {/* Validate and render item quantity */}
+                    {/* Toon de prijs van het item, berekend op basis van de hoeveelheid. */}
                     <View style={styles.quantityContainer}>
-                      <Text style={styles.quantityLabel}>Quantity:</Text>
+                      {/* Render de container voor de hoeveelheidinvoer. */}
+                      <Text style={styles.quantityLabel}>Hoeveelheid:</Text>
+                      {/* Toon het label voor de hoeveelheidinvoer. */}
                       <TextInput
                         style={styles.quantityInput}
                         keyboardType="numeric"
-                        value={item.quantity?.toString() || '1'} // Fallback to '1' if undefined
+                        value={item.quantity?.toString() || '1'}
+                        // Toon de hoeveelheid van het item als een string, of fallback naar '1'.
                         onChangeText={(value) => handleQuantityChange(item.id, value)}
+                        // Roep `handleQuantityChange` aan wanneer de invoerwaarde verandert.
                       />
                     </View>
                   </View>
-
-                  {/* Remove button */}
                   <TouchableOpacity
                     style={styles.removeButton}
                     onPress={() => handleRemoveItem(item.id)}
                   >
-                    <Text style={styles.removeButtonText}>Remove</Text>
+                    {/* Render de "Verwijder"-knop voor het item. */}
+                    <Text style={styles.removeButtonText}>Verwijder</Text>
+                    {/* Toon de tekst voor de "Verwijder"-knop. */}
                   </TouchableOpacity>
                 </View>
               );
             }}
           />
           <TouchableOpacity style={styles.buyButton} onPress={handleBuyItems}>
-            <Text style={styles.buyButtonText}>Buy Items</Text>
+            {/* Render de "Koop items"-knop. */}
+            <Text style={styles.buyButtonText}>Koop items</Text>
+            {/* Toon de tekst voor de "Koop items"-knop. */}
           </TouchableOpacity>
         </>
       )}
@@ -102,6 +127,7 @@ const WishlistScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  // Definieer de stijlen voor het scherm.
   container: {
     flex: 1,
     padding: 20,
@@ -178,3 +204,4 @@ const styles = StyleSheet.create({
 });
 
 export default WishlistScreen;
+// Exporteer de WishlistScreen-component als de standaardexport.
