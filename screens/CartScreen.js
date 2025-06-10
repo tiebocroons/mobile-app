@@ -1,12 +1,25 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
 import { useCart } from '../context/CartContext';
 
-const CartScreen = () => {
+const CartScreen = ({ navigation }) => {
   const { cart, setCart } = useCart();
 
   const handleRemoveItem = (id) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  };
+
+  const handleBuyItems = () => {
+    if (cart.length === 0) {
+      alert('Your cart is empty!');
+      return;
+    }
+
+    // Clear the cart
+    setCart([]);
+
+    // Navigate to the success screen
+    navigation.navigate('Success');
   };
 
   return (
@@ -14,28 +27,31 @@ const CartScreen = () => {
       {cart.length === 0 ? (
         <Text style={styles.emptyText}>Your cart is empty.</Text>
       ) : (
-        <FlatList
-          data={cart}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.itemContainer}>
-              <Image source={{ uri: item.imageUrl }} style={styles.image} />
-              <View style={styles.itemDetails}>
-                <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.price}>
-                  Price: ${(item.price * item.quantity).toFixed(2)} {/* Dynamic price */}
-                </Text>
-                <Text style={styles.quantity}>Quantity: {item.quantity}</Text> {/* Dynamic quantity */}
+        <>
+          <FlatList
+            data={cart}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.itemContainer}>
+                <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                <View style={styles.itemDetails}>
+                  <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.price}>
+                    Price: ${(item.price * item.quantity).toFixed(2)} {/* Dynamic price */}
+                  </Text>
+                  <Text style={styles.quantity}>Quantity: {item.quantity}</Text> {/* Dynamic quantity */}
+                </View>
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => handleRemoveItem(item.id)}
+                >
+                  <Text style={styles.removeButtonText}>Remove</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={styles.removeButton}
-                onPress={() => handleRemoveItem(item.id)}
-              >
-                <Text style={styles.removeButtonText}>Remove</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
+            )}
+          />
+          <Button title="Buy Items" onPress={handleBuyItems} />
+        </>
       )}
     </View>
   );
