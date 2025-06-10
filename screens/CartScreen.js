@@ -1,9 +1,13 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useCart } from '../context/CartContext';
 
 const CartScreen = () => {
-  const { cart } = useCart();
+  const { cart, setCart } = useCart();
+
+  const handleRemoveItem = (id) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  };
 
   return (
     <View style={styles.container}>
@@ -20,6 +24,12 @@ const CartScreen = () => {
                 <Text style={styles.title}>{item.name}</Text>
                 <Text style={styles.price}>Price: ${item.price}</Text>
               </View>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={() => handleRemoveItem(item.id)}
+              >
+                <Text style={styles.removeButtonText}>Remove</Text>
+              </TouchableOpacity>
             </View>
           )}
         />
@@ -59,6 +69,16 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 14,
     color: '#666',
+  },
+  removeButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+  },
+  removeButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
 
