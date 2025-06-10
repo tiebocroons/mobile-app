@@ -22,7 +22,10 @@ const CartScreen = () => {
               <Image source={{ uri: item.imageUrl }} style={styles.image} />
               <View style={styles.itemDetails}>
                 <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.price}>Price: ${item.price}</Text>
+                <Text style={styles.price}>
+                  Price: ${(item.price * item.quantity).toFixed(2)} {/* Dynamic price */}
+                </Text>
+                <Text style={styles.quantity}>Quantity: {item.quantity}</Text> {/* Dynamic quantity */}
               </View>
               <TouchableOpacity
                 style={styles.removeButton}
@@ -69,6 +72,12 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 14,
     color: '#666',
+    marginTop: 5,
+  },
+  quantity: {
+    fontSize: 14,
+    color: '#333',
+    marginTop: 5,
   },
   removeButton: {
     backgroundColor: 'red',
