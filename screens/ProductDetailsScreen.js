@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ActivityIndicator, Button, Alert, ScrollView, TextInput } from 'react-native';
-import axios from 'axios';
 import { useWishlist } from '../context/WishlistContext';
-
-const API_URL = 'https://api.webflow.com/v2/sites/67b3895e80c9f1633cc77720/products';
-const API_KEY = '24041412307977360bc577b126c9f1b8a4b60ee9145baa4df60dbb991731aa73';
+import { fetchData } from '../apiClient';
 
 const ProductDetailsScreen = ({ route }) => {
   const { productId } = route.params;
@@ -18,16 +15,8 @@ const ProductDetailsScreen = ({ route }) => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(API_URL, {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            'accept-version': '1.0.0',
-          },
-        });
-
-        const foundProduct = response.data.items.find(
-          (item) => item.product.id === productId
-        );
+        const data = await fetchData('/sites/67b3895e80c9f1633cc77720/products');
+        const foundProduct = data.items.find((item) => item.product.id === productId);
 
         if (foundProduct) {
           const formattedProduct = {
@@ -42,7 +31,7 @@ const ProductDetailsScreen = ({ route }) => {
           setError('Product not found.');
         }
       } catch (err) {
-        console.error('Error fetching product:', err.response?.data || err.message);
+        console.error('Error fetching product:', err.message);
         setError('An error occurred while fetching the product.');
       } finally {
         setLoading(false);
@@ -61,8 +50,6 @@ const ProductDetailsScreen = ({ route }) => {
   };
 
   const handleQuantityChange = (value) => {
-    console.log('Raw input value:', value); // Debugging log
-
     // Allow empty input temporarily
     if (value === '') {
       setQuantity(''); // Set quantity to an empty string to allow user input
