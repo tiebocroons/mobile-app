@@ -7,8 +7,19 @@ import { View, Text, Image, StyleSheet, ActivityIndicator, Button, Alert, Scroll
 import { useWishlist } from '../context/WishlistContext';
 // Importeer de `useWishlist`-hook om toegang te krijgen tot en de verlanglijstcontext te beheren.
 
-import { fetchData } from '../apiClient';
-// Importeer de `fetchData`-functie om productgegevens van de API op te halen.
+const fetchProducts = async () => {
+  try {
+    const response = await fetch('https://api.webflow.com/v2', {
+      headers: {
+        Authorization: `Bearer API_KEY=886892667cf6f17b2ab536cd43fb4c9c7322f9fc99e2334a946aada783bf01ec`,
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+  }
+};
 
 const ProductDetailsScreen = ({ route }) => {
   // Definieer de ProductDetailsScreen-component en haal de `route`-prop eruit.
@@ -36,14 +47,21 @@ const ProductDetailsScreen = ({ route }) => {
     const fetchProductDetails = async () => {
       // Definieer een asynchrone functie om productdetails op te halen.
       try {
-        const data = await fetchData('/sites/67b3895e80c9f1633cc77720/products');
-        // Haal de productgegevens op van de API.
+        const response = await fetch('https://api.webflow.com/v2/sites/67b3895e80c9f1633cc77720/products', {
+          headers: {
+            Authorization: `Bearer 886892667cf6f17b2ab536cd43fb4c9c7322f9fc99e2334a946aada783bf01ec`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('API Response:', data);
 
         const foundProduct = data.items.find((item) => item.product.id === productId);
-        // Zoek het product in de API-respons dat overeenkomt met het `productId`.
-
         if (foundProduct) {
-          // Als het product wordt gevonden, formatteer de details.
           const formattedProduct = {
             id: foundProduct.product.id,
             name: foundProduct.product.fieldData.name,
@@ -52,17 +70,14 @@ const ProductDetailsScreen = ({ route }) => {
             imageUrl: foundProduct.skus[0]?.fieldData['main-image']?.url || 'https://via.placeholder.com/300',
           };
           setProduct(formattedProduct);
-          // Werk de `product`-state bij met de geformatteerde productdetails.
         } else {
           setError('Product niet gevonden.');
-          // Stel een foutmelding in als het product niet wordt gevonden.
         }
       } catch (err) {
+        console.error('Error fetching product:', err.message);
         setError('Er is een fout opgetreden bij het ophalen van het product.');
-        // Stel een foutmelding in als de API-aanroep mislukt.
       } finally {
         setLoading(false);
-        // Zet de `loading`-state op `false` nadat de API-aanroep is voltooid.
       }
     };
 
