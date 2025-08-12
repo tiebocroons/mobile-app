@@ -4,8 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 // Importeer React Native-componenten om de gebruikersinterface te bouwen.
 
-import { fetchData } from '../apiClient';
-// Importeer de `fetchData`-functie om bloggegevens van de API op te halen.
+const fetchProducts = async () => {
+  try {
+    const response = await fetch('https://api.webflow.com/v2', {
+      headers: {
+        Authorization: `Bearer API_KEY=886892667cf6f17b2ab536cd43fb4c9c7322f9fc99e2334a946aada783bf01ec`,
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+  }
+};
 
 const BlogScreen = ({ navigation }) => {
   // Definieer de BlogScreen-component en haal de `navigation`-prop eruit.
@@ -24,8 +35,19 @@ const BlogScreen = ({ navigation }) => {
     const fetchBlogs = async () => {
       // Definieer een asynchrone functie om bloggegevens op te halen.
       try {
-        const data = await fetchData('/collections/67d81fa4a55228348b937c11/items');
-        // Haal bloggegevens op van de API.
+        setError(null); // Reset de foutmelding aan het begin van de functie.
+        const response = await fetch('https://api.webflow.com/v2/collections/67d81fa4a55228348b937c11/items', {
+          headers: {
+            Authorization: `Bearer 886892667cf6f17b2ab536cd43fb4c9c7322f9fc99e2334a946aada783bf01ec`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('API Response:', data); // Controleer de API-respons in de console.
 
         const formattedBlogs = data.items.map((item) => ({
           // Formatteer de bloggegevens zodat alleen de benodigde velden worden opgenomen.
@@ -43,6 +65,7 @@ const BlogScreen = ({ navigation }) => {
         setBlogs(formattedBlogs);
         // Werk de `blogs`-state bij met de geformatteerde bloggegevens.
       } catch (err) {
+        console.error('Error fetching blogs:', err.message);
         setError('Er is een fout opgetreden bij het ophalen van de blogs.');
         // Stel een foutmelding in als het ophalen van de gegevens mislukt.
       } finally {
