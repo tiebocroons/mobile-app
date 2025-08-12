@@ -121,6 +121,20 @@ const BlogStack = () => {
   );
 };
 
+const fetchProducts = async () => {
+  try {
+    const response = await fetch('https://api.webflow.com/v2', {
+      headers: {
+        Authorization: `Bearer API_KEY=886892667cf6f17b2ab536cd43fb4c9c7322f9fc99e2334a946aada783bf01ec`,
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+  }
+};
+
 const App = () => {
   return (
     <ErrorBoundary>
