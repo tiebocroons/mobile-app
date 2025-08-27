@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet, ActivityIndicator, Text, FlatList, RefreshControl, TextInput } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Text, FlatList, RefreshControl, TextInput, Image } from 'react-native';
 import ProductCard from '../components/ProductCard';
 
 const HomeScreen = ({ navigation }) => {
@@ -13,9 +13,9 @@ const HomeScreen = ({ navigation }) => {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://api.webflow.com/v2/sites/67b3895e80c9f1633cc77720/products' , {
+      const response = await fetch('https://api.webflow.com/v2/sites/67b3895e80c9f1633cc77720/products', {
         headers: {
-          Authorization: `Bearer 886892667cf6f17b2ab536cd43fb4c9c7322f9fc99e2334a946aada783bf01ec`
+          Authorization: `Bearer 886892667cf6f17b2ab536cd43fb4c9c7322f9fc99e2334a946aada783bf01ec`,
         },
       });
 
@@ -143,6 +143,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'red',
     textAlign: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 10,
   },
 });
 
