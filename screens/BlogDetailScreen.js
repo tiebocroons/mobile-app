@@ -7,10 +7,10 @@ import { View, Text, StyleSheet, ScrollView, Image, useWindowDimensions } from '
 import RenderHTML from 'react-native-render-html';
 // Importeer de `RenderHTML`-component om HTML-inhoud in de blogtekst weer te geven.
 
-const BlogDetailScreen = ({ route = {} }) => {
+const BlogDetailScreen = ({ route }) => {
   // Definieer de BlogDetailScreen-component en haal de `route`-prop eruit met een standaardwaarde.
 
-  const { title = 'Untitled', intro = '', blogText = '', imageUrl = 'https://via.placeholder.com/200' } = route.params || {};
+  const { title, intro, blogText, imageUrl } = route.params || {};
   // Haal de blogdetails uit `route.params` met standaardwaarden als fallback.
 
   const { width } = useWindowDimensions();
