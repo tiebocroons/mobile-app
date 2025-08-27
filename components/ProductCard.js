@@ -7,6 +7,23 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 const ProductCard = ({ product, onPress }) => {
   // Definieer de ProductCard-component en haal de `product`- en `onPress`-props eruit.
 
+  console.log('Product Image URL:', product.imageUrl);
+  // Log de URL van de productafbeelding naar de console.
+
+  if (!product.imageUrl) {
+    console.error('Afbeelding ontbreekt voor product:', product);
+  }
+  // Controleer of de productafbeelding ontbreekt en log een foutmelding naar de console als dat zo is.
+
+  fetch(product.imageUrl)
+    .then((response) => {
+      console.log('Content-Type:', response.headers.get('Content-Type'));
+    })
+    .catch((error) => {
+      console.error('Error fetching image:', error);
+    });
+  // Haal de afbeelding op met behulp van de `imageUrl` en log de Content-Type-header naar de console.
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.card}>
       {/* Maak een klikbare kaart die de `onPress`-functie uitvoert wanneer erop wordt geklikt. */}
