@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buyButton: {
-    backgroundColor: 'tomato',
+    backgroundColor: 'black',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
