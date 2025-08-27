@@ -165,7 +165,7 @@ const App = () => {
                   return <Ionicons name={iconName} size={size} color={color} />;
                   // Render de Ionicons-component met het juiste icoon.
                 },
-                tabBarActiveTintColor: 'tomato', // Stel de kleur in voor de actieve tab.
+                tabBarActiveTintColor: 'black', // Stel de kleur in voor de actieve tab.
                 tabBarInactiveTintColor: 'gray', // Stel de kleur in voor de inactieve tab.
                 headerShown: false, // Verberg de header voor de bottom tabs.
               })}
